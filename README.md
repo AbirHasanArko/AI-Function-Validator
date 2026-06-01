@@ -11,6 +11,10 @@ pinned: false
 
 A system that simulates how LLMs generate function calls and then **validates**, **executes**, and **analyzes** them like a real AI data pipeline — demonstrating JSON handling, function calling, data validation, SQL integration, workflow automation, and AI output debugging.
 
+### 🌐 Live Demo
+- **Full Screen App:** [https://arko-hasan-ai-function-validator.hf.space](https://arko-hasan-ai-function-validator.hf.space)
+- **Hugging Face Space:** [https://huggingface.co/spaces/arko-hasan/AI-Function-Validator](https://huggingface.co/spaces/arko-hasan/AI-Function-Validator)
+
 ---
 
 ## ✨ Features
@@ -81,6 +85,17 @@ uvicorn backend.main:app --reload --port 8000
 ### Open the Dashboard
 
 Navigate to **http://localhost:8000** in your browser.
+
+---
+
+## 🌍 Free Deployment (Hugging Face Spaces)
+
+This repository is pre-configured for free deployment via **Hugging Face Spaces** using Docker.
+
+1. Go to [Hugging Face Spaces](https://huggingface.co/spaces) and create a new Space.
+2. Select **Docker** as the SDK and choose **Blank**.
+3. Under the Space's Settings, link your GitHub repository (`AbirHasanArko/AI-Function-Validator`) OR drag-and-drop the project files into the **Files** tab.
+4. Hugging Face will automatically use the provided `Dockerfile` to build and serve the application entirely for free, with no credit card required.
 
 ---
 
