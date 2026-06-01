@@ -1,3 +1,12 @@
+---
+title: AI Function Validator
+emoji: 🚀
+colorFrom: purple
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # 🤖 AI Dataset Validator & Function-Calling Simulator
 
 A system that simulates how LLMs generate function calls and then **validates**, **executes**, and **analyzes** them like a real AI data pipeline — demonstrating JSON handling, function calling, data validation, SQL integration, workflow automation, and AI output debugging.
