@@ -1,0 +1,46 @@
+[
+  {
+    "_comment": "Invalid operator => instead of >=",
+    "name": "query_database",
+    "arguments": {
+      "query": "SELECT * FROM users WHERE age => 20"
+    }
+  },
+  {
+    "_comment": "SQL injection attempt",
+    "name": "query_database",
+    "arguments": {
+      "query": "SELECT * FROM users WHERE name = '' OR '1'='1'; DROP TABLE users; --"
+    }
+  },
+  {
+    "_comment": "Missing required parameter 'query'",
+    "name": "query_database",
+    "arguments": {}
+  },
+  {
+    "_comment": "Unknown function name",
+    "name": "hack_database",
+    "arguments": {
+      "query": "SELECT * FROM secrets"
+    }
+  },
+  {
+    "_comment": "Wrong type: user_id should be integer, not string",
+    "name": "get_user_stats",
+    "arguments": {
+      "user_id": "not_a_number"
+    }
+  },
+  {
+    "_comment": "Dangerous DELETE statement",
+    "name": "query_database",
+    "arguments": {
+      "query": "DELETE FROM users WHERE id = 1"
+    }
+  },
+  {
+    "_comment": "Missing 'arguments' field entirely",
+    "name": "search_products"
+  }
+]

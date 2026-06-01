@@ -1,0 +1,40 @@
+[
+  {
+    "name": "query_database",
+    "arguments": {
+      "query": "SELECT * FROM users WHERE city = 'Dhaka' AND age > 20"
+    }
+  },
+  {
+    "name": "get_user_stats",
+    "arguments": {
+      "user_id": 1
+    }
+  },
+  {
+    "name": "search_products",
+    "arguments": {
+      "keyword": "Electronics",
+      "max_price": 2000.00
+    }
+  },
+  {
+    "name": "get_order_history",
+    "arguments": {
+      "user_id": 5,
+      "limit": 5
+    }
+  },
+  {
+    "name": "query_database",
+    "arguments": {
+      "query": "SELECT name, email, age FROM users WHERE age >= 25 ORDER BY age DESC"
+    }
+  },
+  {
+    "name": "search_products",
+    "arguments": {
+      "keyword": "Book"
+    }
+  }
+]
