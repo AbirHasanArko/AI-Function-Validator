@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Dataset Validator & Function-Calling Simulator — Validate, execute, and analyze LLM-style function calls with a real SQL pipeline.">
+    <title>AI Dataset Validator & Function-Calling Simulator</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="toast-container" id="toast-container"></div>
+
+<div class="app-container">
+
+    <!-- ─── Header ─────────────────────────────────────────────────────── -->
+    <header class="app-header">
+        <h1>🤖 AI Dataset Validator</h1>
+        <p class="subtitle">Function-Calling Simulator &amp; Data Pipeline QA System</p>
+        <div class="header-badges">
+            <span class="badge badge-green">✓ JSON Validation</span>
+            <span class="badge badge-blue">✓ Schema Checks</span>
+            <span class="badge badge-yellow">✓ SQL Safety</span>
+            <span class="badge badge-red">✓ Error Detection</span>
+            <span class="badge badge-cyan">✓ Dataset QA</span>
+        </div>
+    </header>
+
+    <!-- ─── Tab Navigation ─────────────────────────────────────────────── -->
+    <nav class="tab-bar" id="tab-bar">
+        <button class="tab-btn active" data-tab="pipeline" id="tab-pipeline">🔄 Pipeline</button>
+        <button class="tab-btn" data-tab="validator" id="tab-validator">🛡️ Validator</button>
+        <button class="tab-btn" data-tab="injector" id="tab-injector">💉 Error Injector</button>
+        <button class="tab-btn" data-tab="registry" id="tab-registry">📋 Registry</button>
+        <button class="tab-btn" data-tab="analytics" id="tab-analytics">📊 Analytics</button>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TAB 1: Full Pipeline                                               -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel active" id="panel-pipeline">
+
+        <!-- NL Input -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">💬</span> Natural Language Input</span>
+            </div>
+            <div class="input-group">
+                <input type="text" class="nl-input" id="nl-input"
+                       placeholder='Try: "Find users in Dhaka above age 20"'
+                       autocomplete="off">
+                <button class="btn btn-primary" id="btn-pipeline" onclick="runPipeline()">
+                    ▶ Run Pipeline
+                </button>
+            </div>
+            <div style="margin-top: 10px;">
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Quick examples: </span>
+                <button class="btn btn-secondary btn-sm" onclick="setNlInput('Find users in Dhaka above age 20')">Users in Dhaka</button>
+                <button class="btn btn-secondary btn-sm" onclick="setNlInput('Show stats for user 5')">User Stats</button>
+                <button class="btn btn-secondary btn-sm" onclick="setNlInput('Search products under 1000')">Search Products</button>
+                <button class="btn btn-secondary btn-sm" onclick="setNlInput('Order history for user 1, last 5')">Order History</button>
+            </div>
+        </div>
+
+        <!-- Pipeline Results -->
+        <div id="pipeline-results" style="display: none;">
+
+            <!-- Generated Function Call -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">⚡</span> Generated Function Call</span>
+                    <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('pipeline-json')">📋 Copy</button>
+                </div>
+                <div class="json-editor">
+                    <textarea id="pipeline-json" readonly></textarea>
+                </div>
+            </div>
+
+            <!-- Validation -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">🛡️</span> Validation Result</span>
+                </div>
+                <div id="pipeline-validation"></div>
+            </div>
+
+            <!-- Query Results -->
+            <div class="card" id="pipeline-data-card" style="display: none;">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">📊</span> Query Results</span>
+                </div>
+                <div id="pipeline-data"></div>
+            </div>
+
+            <!-- Dataset QA -->
+            <div class="card" id="pipeline-qa-card" style="display: none;">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">🔍</span> Dataset Quality Analysis</span>
+                </div>
+                <div id="pipeline-qa"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TAB 2: Manual Validator                                            -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-validator">
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">📝</span> Function Call JSON</span>
+            </div>
+            <div class="json-editor">
+                <textarea id="validator-input" placeholder='Paste or type JSON here...
+{
+  "name": "query_database",
+  "arguments": {
+    "query": "SELECT * FROM users WHERE city = &apos;Dhaka&apos;"
+  }
+}'></textarea>
+            </div>
+            <div class="editor-toolbar">
+                <button class="btn btn-primary" onclick="runValidation()">🛡️ Validate</button>
+                <button class="btn btn-info" onclick="runValidateAndExecute()">▶ Validate & Execute</button>
+                <button class="btn btn-secondary" onclick="formatJson()">🔧 Format JSON</button>
+                <button class="btn btn-secondary" onclick="clearValidator()">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <!-- Validation Results -->
+        <div class="validation-results" id="validator-results">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">🛡️</span> Validation Result</span>
+                </div>
+                <div id="validator-validation"></div>
+            </div>
+        </div>
+
+        <!-- Execution Results -->
+        <div id="validator-exec-results" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">📊</span> Execution Results</span>
+                </div>
+                <div id="validator-data"></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">🔍</span> Dataset Quality Analysis</span>
+                </div>
+                <div id="validator-qa"></div>
+            </div>
+        </div>
+
+        <!-- Sample Calls -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">📁</span> Sample Function Calls</span>
+            </div>
+            <div class="sample-grid">
+                <div class="sample-section">
+                    <h3><span style="color: var(--accent-primary);">✓</span> Valid Calls</h3>
+                    <div id="good-samples"></div>
+                </div>
+                <div class="sample-section">
+                    <h3><span style="color: var(--accent-error);">✗</span> Invalid Calls</h3>
+                    <div id="bad-samples"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TAB 3: Error Injector                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-injector">
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">🎯</span> Base Function Call (will be corrupted)</span>
+            </div>
+            <div class="json-editor">
+                <textarea id="injector-input">{
+  "name": "query_database",
+  "arguments": {
+    "query": "SELECT * FROM users WHERE city = 'Dhaka' AND age > 20"
+  }
+}</textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">💉</span> Injection Modes — Click to Inject</span>
+            </div>
+            <div class="injection-modes" id="injection-modes"></div>
+        </div>
+
+        <!-- Injection Result -->
+        <div class="injection-result" id="injection-result">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">🔬</span> Injection Result</span>
+                </div>
+                <div id="injection-description" style="margin-bottom: 12px; font-size: 0.9rem; color: var(--accent-warning);"></div>
+                <div class="diff-view">
+                    <div class="diff-panel original">
+                        <span class="diff-label" style="color: var(--accent-primary);">✓ Original</span>
+                        <div id="diff-original"></div>
+                    </div>
+                    <div class="diff-panel corrupted">
+                        <span class="diff-label" style="color: var(--accent-error);">✗ Corrupted</span>
+                        <div id="diff-corrupted"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><span class="icon">🛡️</span> Validation of Corrupted Call</span>
+                </div>
+                <div id="injection-validation"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TAB 4: Function Registry                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-registry">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">📋</span> Registered Functions</span>
+                <span class="badge badge-blue" id="registry-count">0 functions</span>
+            </div>
+            <div class="registry-list" id="registry-list">
+                <div class="empty-state">
+                    <div class="icon">⏳</div>
+                    <p>Loading registry...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TAB 5: Analytics Dashboard                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-analytics">
+
+        <!-- Stats Cards -->
+        <div class="analytics-grid" id="analytics-stats">
+            <div class="stat-card primary">
+                <span class="stat-value" id="stat-total">0</span>
+                <span class="stat-label">Total Runs</span>
+            </div>
+            <div class="stat-card success">
+                <span class="stat-value" id="stat-valid">0%</span>
+                <span class="stat-label">Valid Rate</span>
+            </div>
+            <div class="stat-card danger">
+                <span class="stat-value" id="stat-invalid">0%</span>
+                <span class="stat-label">Invalid Rate</span>
+            </div>
+            <div class="stat-card info">
+                <span class="stat-value" id="stat-quality">0</span>
+                <span class="stat-label">Avg Quality</span>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+            <div class="chart-container">
+                <div class="chart-title">Validation Results Distribution</div>
+                <canvas id="chart-validation"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Error Type Breakdown</div>
+                <canvas id="chart-errors"></canvas>
+            </div>
+        </div>
+        <div class="charts-row">
+            <div class="chart-container">
+                <div class="chart-title">Function Usage</div>
+                <canvas id="chart-functions"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">SQL Failure vs Success</div>
+                <canvas id="chart-sql"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Runs -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><span class="icon">📜</span> Recent Pipeline Runs</span>
+                <button class="btn btn-secondary btn-sm" onclick="refreshAnalytics()">🔄 Refresh</button>
+            </div>
+            <div id="recent-runs">
+                <div class="empty-state">
+                    <div class="icon">📊</div>
+                    <p>No pipeline runs yet. Go to the Pipeline tab to start!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
